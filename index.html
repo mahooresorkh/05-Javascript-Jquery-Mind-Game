@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Mind Game</title>
+        <style>
+                @media (max-width: 700px){
+                     div#main-container{
+                         width: 80% !important;    
+                     }
+                }
+                h2{
+                    text-align: center;
+                    margin: 10px auto;
+                }
+                div#main-container{
+                    width: 40%;
+                    margin: 0px auto;
+                    position: relative;   
+                    box-sizing: border-box; 
+                }
+
+                div#main-container > div{
+                    border: 1px solid green;
+                    width:25%;
+                    height: 25%;
+                    position: absolute;
+                    background-image: url('question.png');
+                    background-position: center;
+                    background-size: cover;
+                    background-repeat: no-repeat;
+                    box-sizing: border-box;
+                }
+        </style>
+        <script src="jquery-3.4.1.min.js"></script>
+        <script>
+                //initialization
+                function resizeFunc(){
+                    location.reload();
+                }
+
+                function shuffle(num){  
+                    for (let index = 0; index < num.length; index++) {
+                        var newInd = Math.floor(Math.random()*num.length);
+                        var temp = null;
+                        temp = num[index];
+                        num[index] = num[newInd];
+                        num[newInd] = temp;
+                    }    
+                    
+                    return num;
+                }
+
+                var imagesName = ['01.jpg','02.jpg','03.jpg','04.jpg','05.jpg','06.jpg','07.jpg','08.jpg'
+                                      ,'01.jpg','02.jpg','03.jpg','04.jpg','05.jpg','06.jpg','07.jpg','08.jpg']; 
+                var numbers = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];                 
+                numbers = shuffle(numbers);   
+                var countDown = null;
+                
+                $(document).ready(function(){
+                     var mainWidth = $('div#main-container').width();                
+                     $('div#main-container').css({height: mainWidth + 'px'});
+                     var gameTime = 60*31.5*1000;
+                     countDown = setInterval(function(){
+                        var d = new Date(gameTime);
+                        $('h2').text(d.getMinutes() + 'm ' + d.getSeconds() + 's ' + d.getMilliseconds()/10 + 'ms');
+                        gameTime -= 10;
+                        if(d.getMinutes()==0 && d.getSeconds()==0 && d.getMilliseconds()==0){
+                            alert('Game Over!!!');
+                            location.reload();
+                        }
+                     },10); 
+ 
+                });
+                // end of initialization
+
+                function checkIfItsDone(){
+                            if($('[onclick="rotFunc(this)"]').toArray().length==0){
+                                clearInterval(countDown);
+                                alert('You Won!!!');
+                         }
+                     } 
+
+
+
+                //rotation effect
+                var deg = 0;
+                var timer = null;
+                var previousItem = null;
+                function rotFunc(elem){
+                   if(elem == previousItem){
+                        return;
+                   }
+                   if(timer==null){
+                     timer = setInterval(function(){
+                        if(deg<=180){  
+                            if(deg==90){
+                                elem.style.backgroundImage = "url(" + imagesName[numbers[elem.id]] + ")";      
+                            }     
+                                elem.style.transform = "rotateY(" + deg + "deg)"; 
+                                deg++;
+                        }
+                        else{
+                            clearInterval(timer);
+                            timer = null;
+                            deg = 0;
+                            Matched(elem);    
+                        }  
+                     },6);
+                     
+
+                   }      
+                }
+
+                function Matched(elem){
+                        if(previousItem){  
+                            if(previousItem.style.backgroundImage==elem.style.backgroundImage){
+                                elem.removeAttribute('onclick');    
+                                previousItem.removeAttribute('onclick');  
+                                previousItem = null;
+                                checkIfItsDone();  
+                                return;
+                            }
+                            else{
+                                deg = 180;    
+                                timer = setInterval(function(){     
+                                   if(deg>=0){  
+                                      if (deg==90){
+                                         elem.style.backgroundImage = "url('question.png')";
+                                         previousItem.style.backgroundImage = "url('question.png')";      
+                                      }     
+                                      elem.style.transform = "rotateY(" + deg + "deg)"; 
+                                      previousItem.style.transform = "rotateY(" + deg + "deg)"; 
+                                      deg--;
+                                   }
+                                   else{
+                                      clearInterval(timer);
+                                      timer = null;
+                                      deg = 0;    
+                                      previousItem = null;
+                                   } 
+
+                               },6);
+                            }   
+                        }
+                        else{
+                           previousItem = elem;
+                        }   
+                }
+
+                //end of rotation effect
+  
+        </script>
+</head>
+<body onresize="resizeFunc()">
+        <h2></h2>
+        <div id="main-container">
+                <div id="0"  style="top: 0%; left: 0%;" onclick="rotFunc(this)"></div>
+                <div id="1"  style="top: 0%; left: 25%;" onclick="rotFunc(this)"></div>
+                <div id="2"  style="top: 0%; left: 50%;" onclick="rotFunc(this)"></div>
+                <div id="3"  style="top: 0%; left: 75%;" onclick="rotFunc(this)"></div>
+                <div id="4"  style="top: 25%; left: 0%;" onclick="rotFunc(this)"></div>
+                <div id="5"  style="top: 25%; left: 25%;" onclick="rotFunc(this)"></div>
+                <div id="6"  style="top: 25%; left: 50%;" onclick="rotFunc(this)"></div>
+                <div id="7"  style="top: 25%; left: 75%;" onclick="rotFunc(this)"></div>
+                <div id="8" style="top: 50%; left: 0%;" onclick="rotFunc(this)"></div>
+                <div id="9"  style="top: 50%; left: 25%;" onclick="rotFunc(this)"></div>
+                <div id="10"  style="top: 50%; left: 50%;" onclick="rotFunc(this)"></div>
+                <div id="11"  style="top: 50%; left: 75%;" onclick="rotFunc(this)"></div>
+                <div id="12"  style="top: 75%; left: 0%;" onclick="rotFunc(this)"></div>
+                <div id="13"  style="top: 75%; left: 25%;" onclick="rotFunc(this)"></div>
+                <div id="14"  style="top: 75%; left: 50%;" onclick="rotFunc(this)"></div>
+                <div id="15"  style="top: 75%; left: 75%;" onclick="rotFunc(this)"></div>
+        </div>                        
+</body>
+</html>
+       
